@@ -1,0 +1,6 @@
+{
+  "name": "DataCenter Copilot — Linux & Network Diagnostics Lab",
+  "description": "Portfolio-grade Linux systems monitoring, network diagnostics, safe incident simulation, and Gemini-powered RCA assistant for aspiring Data Center Technicians.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
