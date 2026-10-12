@@ -1,29 +1,31 @@
-# DataCenter Copilot — AI-Assisted Linux & Network Diagnostics Lab
+# DataCenter Copilot — Oracle Cloud Infrastructure (OCI) Data Center Technician Edition
 
-**Portfolio-Grade Diagnostic & Incident Simulation Environment for Data Center Operations**
-*Tailored for aspiring Google Data Center Technicians (DCT), Linux Systems Engineers, and Network Operations Specialists.*
+**Portfolio-Grade Diagnostic, Hardware Break-Fix & Operations Lab**  
+*Tailored for Oracle Cloud Infrastructure (OCI) Data Center Operations Technicians, Linux Systems Engineers, and Network Infrastructure Specialists.*
 
 ---
 
 ## 1. Overview & Architecture
 
-**DataCenter Copilot** is a functional Linux systems administration, network troubleshooting, and incident response lab. It combines real-time Linux telemetry collection from kernel subsystems, safe Layer 3/Layer 4 network diagnostics, four isolated operational failure simulations, persistent SQLite incident tracking, and Gemini-powered automated Root Cause Analysis (RCA).
+**DataCenter Copilot** is a comprehensive Linux systems administration, hardware break-fix, network troubleshooting, and 24x7 operations lab. Built for aspiring and practicing Data Center Technicians, it models real-world Oracle Cloud Infrastructure (OCI) data hall workflows while executing live read-only diagnostics on the host Linux environment.
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   DataCenter Copilot Unified Architecture             │
-└────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│               DataCenter Copilot OCI Operations Architecture                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
 
  [ React / TypeScript UI ] ──── (HTTP / JSON API) ───► [ Node.js Express Gateway ]
-   - Mission-Control Dashboard                           - Host Lifecycle Sync
-   - Live Health Gauges & Telemetry                      - Gemini GenAI Proxy
-   - Interactive Socket Diagnostic Tools                 - Vite Middleware
-   - Failure Lab Control Panel                           │
-   - SQLite Incident Post-Mortem Feed                    │ (Subprocess CLI)
-   - Dynamic Automated Test Runner                       ▼
-                                           [ Python Diagnostics Engine ]
+   - OCI Operations Control Center                       - Host Lifecycle Sync
+   - Hardware Break-Fix Lab (11 Scenarios)               - Gemini GenAI Proxy
+   - Safe Linux Diagnostic CLI Suite                     - Vite Middleware
+   - Network Troubleshooting Workflows                   │
+   - 42U Physical Rack Elevation                         │ (Subprocess CLI)
+   - SQLite Incident Post-Mortem Feed                    ▼
+   - Automated Dynamic Test Runner         [ Python Diagnostics & OCI Operations Engine ]
                                              - datacenter_copilot.metrics (/proc, ps, ip)
                                              - datacenter_copilot.network_diag (sockets, DNS)
+                                             - datacenter_copilot.linux_ops (allowlist CLI)
+                                             - datacenter_copilot.oci_operations (telemetry & SOPs)
                                              - datacenter_copilot.simulations (port 8085)
                                              - datacenter_copilot.incident_store (incidents.db)
                                              - datacenter_copilot.gemini_assistant
@@ -34,24 +36,33 @@
     - /proc/meminfo & /proc/uptime                                       - Model: gemini-3.8-flash
     - ps -eo (Real process consumption)                                  - Evidence-based RCA
     - ip route & ip addr (L2/L3)                                         - Safe read-only runbooks
-    - Port 8085 persistent telemetry daemon                              - Offline heuristic fallback
+    - Strict allowlist read-only checks                                  - Offline heuristic fallback
     - Persistent SQLite database (incidents.db)
 ```
 
 ---
 
-## 2. Key Features
+## 2. Target Job Responsibilities & Core Features
 
-- **Genuine Linux Health Telemetry:** Reads directly from `/proc/meminfo`, `/proc/uptime`, `/proc/cpuinfo`, `ps`, and `iproute2`. Accurately breaks down RAM into Free, Used, Buffers, and Page Cache.
-- **Safe Network Diagnostics:** Performs real DNS lookups and TCP three-way handshake probes with strict allowlist enforcement (rejects arbitrary port scanning or unauthorized networks).
-- **Safe Failure Simulation Lab:** Four repeatable, zero-risk operational failure scenarios:
-  1. *Scenario A:* Local HTTP Telemetry Daemon outage (controlled loopback port 8085).
-  2. *Scenario B:* DNS resolution failure on an invalid domain (NXDOMAIN / ENOTFOUND).
-  3. *Scenario C:* Unreachable local TCP port probe (closed port 8888 returning ECONNREFUSED).
-  4. *Scenario D:* Safe root filesystem storage pressure alert (>85% utilization logic without physical disk filling).
-- **Incident Management & SQLite Persistence:** Full incident lifecycle tracking (OPEN → INVESTIGATING → RESOLVED), engineer runbook notes, pre/post remediation telemetry snapshot comparisons, and 1-click Markdown post-mortem exports. All state persists across server and browser restarts in `incidents.db`.
-- **Gemini AI Root Cause Analysis:** Uses `gemini-3.8-flash` to synthesize evidence into prioritized hypotheses, confirmed empirical observations, and safe read-only Linux commands. Gracefully degrades to an offline rule-based heuristic engine when an API key is absent.
-- **Genuine Test Execution:** 15 automated unit and integration tests executing in real-time via `python3 -m unittest tests/test_copilot.py -v`. Zero fake or hard-coded pass indicators.
+- **OCI Operations Control Center:** Live simulated operational telemetry for `us-ashburn-1 AD-1` (IAD-DC-04 Data Hall 02). Monitors site capacity, 2N power feeds (Feed A/B loads, UPS, utility kw), environmental cooling (supply/return air temps, CRAC N+2 redundancy, hot-aisle containment, PUE), ticket queue prioritization, and 24x7 shift handover logs.
+- **Hardware Break-Fix Lab (11 Known Server & Network Failure Modes):**
+  1. *Server Fails to Power On:* Dislodged AC cord and rectifier failure on PSU-1.
+  2. *Server Unreachable Over Network:* Fiber micro-bend and dirty LC optical ferrule (< -38 dBm RX power).
+  3. *Failed / Degraded Storage Drive:* 3.84TB NVMe SSD media exhaustion and controller timeout.
+  4. *Memory Multi-Bit ECC Fault:* Catastrophic DRAM failure in DIMM slot CPU1_B0.
+  5. *CPU Overheating & Throttling:* Loose heatsink retention screw and misaligned airflow shroud.
+  6. *Cooling Fan Failure:* Mechanical bearing seizure on dual-rotor Fan Module 4.
+  7. *Redundant PSU Alert:* Loss of Feed B redundancy, load sharing diagnostics.
+  8. *Network Interface Down:* Unseated 100G QSFP28 optical transceiver in PCIe NIC cage.
+  9. *Link Errors & CRC Drops:* Pinched LC fiber patch jumper from overtightened zip-tie.
+  10. *Failing 400G Spine Transceiver:* Laser diode degradation and excessive TX bias current.
+  11. *Failed Health Check After Maintenance:* Unprogrammed FRU EEPROM and unpatched baseline firmware.
+- **Linux Diagnostics CLI Suite:** Argument-list subprocess execution of 15 safe, read-only checks (`uname -a`, `cat /etc/os-release`, `uptime`, `free -h`, `ps -eo`, `df -hT`, `lsblk`, `findmnt`, `ip addr`, `ip -s link`, `ip route`, `ss -tuln`, `ping -c 3`, `journalctl -p 3`, `systemctl`). Strict allowlists, 3.0s timeouts, and 32KB output limits.
+- **Network Troubleshooting Workflows:** Guided Layer 1 (Link/PHY/Optics), Layer 3 (IP/Subnet/Gateway/ARP), and Layer 4/7 (DNS/Sockets/TCP) diagnostic sequences.
+- **Incident Management & SQLite Persistence:** Full incident lifecycle tracking (OPEN → INVESTIGATING → RESOLVED), engineer notes, pre/post remediation snapshot comparisons, and Markdown post-mortem exports in `incidents.db`.
+- **Gemini AI Root Cause Analysis:** Uses `gemini-3.8-flash` with low thinking level to synthesize evidence into prioritized hypotheses and safe read-only commands. Gracefully degrades to an offline rule-based heuristic engine when an API key is absent.
+- **Genuine Test Execution:** 17 automated unit and integration tests executing in real-time via `python3 -m unittest tests/test_copilot.py -v`.
+
 
 ---
 

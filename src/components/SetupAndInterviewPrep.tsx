@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { BookOpen, Terminal, CheckCircle2, Copy, Check, ChevronDown, ChevronRight, Award, Shield, Cpu, Network } from 'lucide-react';
+import { BookOpen, Terminal, CheckCircle2, Copy, Check, ChevronDown, ChevronRight, Award, Shield, Cpu, Network, Wrench } from 'lucide-react';
 
 export const SetupAndInterviewPrep: React.FC = () => {
-  const [activeSubTab, setActiveSubTab] = useState<'phase1' | 'questions' | 'architecture' | 'resume'>('phase1');
+  const [activeSubTab, setActiveSubTab] = useState<'oci_dct' | 'phase1' | 'questions' | 'architecture' | 'resume'>('oci_dct');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
@@ -11,6 +11,29 @@ export const SetupAndInterviewPrep: React.FC = () => {
     setCopiedCode(text);
     setTimeout(() => setCopiedCode(null), 2000);
   };
+
+  const ociQuestions = [
+    {
+      q: 'OCI DCT 1: What exact steps do you take when responding to a server with redundant power supply (PSU) failure in an OCI production rack?',
+      a: '1. Acknowledge the ticket within the SEV-2/3 SLA window. 2. Verify physical asset tag, rack unit, and serial number. 3. Check the alternate PSU to ensure it is bearing load without alarm on PDU Feed A. 4. Disconnect AC cord from failed PSU-2 after releasing retention clip. 5. Press the release latch and slide the failed PSU out of the chassis bay. 6. Inspect chassis connector pins for burns or bent pins. 7. Slide certified replacement FRU into the bay until positive click. 8. Reconnect AC cord and secure retention bail. 9. Verify LED turns solid green and check IPMI: `ipmitool sdr elist | grep -i psu`. 10. Update DCIM asset inventory, add ticket notes, and resolve.'
+    },
+    {
+      q: 'OCI DCT 2: A bare metal NVMe storage node reports an uncorrectable drive failure in Bay 07. How do you replace it safely without risking data loss?',
+      a: '1. Confirm storage pool parity (RAID or ZFS pool status) has sufficient redundancy to survive replacement. 2. Verify bay location using physical drive carrier locate LED (`nvme-cli` or `ledctl locate`) to eliminate pull error. 3. Issue software offline command to flush write cache and unmount drive. 4. Wait 30 seconds for spindle/controller shutdown. 5. Unlatch carrier lever, extract drive, and seat exact OCI replacement NVMe SSD FRU. 6. Latch carrier, verify green power LED, and trigger array rebuild/resilvering. 7. Monitor rebuild telemetry until array status is ONLINE.'
+    },
+    {
+      q: 'OCI DCT 3: A 100GbE QSFP28 uplink to a Top-of-Rack switch experiences intermittent CRC errors and dropped frames. How do you isolate the fault?',
+      a: '1. Run `ethtool -S <iface> | grep crc` to confirm CRC error counter is actively incrementing. 2. Inspect optical transceiver telemetry via `ethtool -m <iface>`: check RX/TX optical power (normal is -4 to -8 dBm; <-14 dBm indicates severe signal attenuation). 3. Inspect physical fiber routing: look for pinched cables (<30mm bend radius) or overtightened zip-ties. 4. Clean optical connector end-faces using a 2.5mm dry click cleaner. 5. Replace fiber patch jumper with known-good cable. 6. If errors continue, hot-swap the QSFP28 optical transceiver. 7. If still failing, escalate to Network Team for switch port ASIC diagnostic.'
+    },
+    {
+      q: 'OCI DCT 4: Why are blanking panels required in empty rack units, and what happens to server thermals if they are missing?',
+      a: 'Blanking panels prevent hot exhaust air from recirculating from the hot aisle over the top or sides of the rack back into cold aisle server intakes. Without blanking panels, upper rack units inhale warm air (>30°C instead of 21°C), causing fans to run at 100% RPM, increasing power draw, and inducing CPU thermal throttling.'
+    },
+    {
+      q: 'OCI DCT 5: What is the mandatory electrical safety procedure (LOTO) before working inside an energized electrical distribution cabinet or PDU?',
+      a: 'Lockout/Tagout (LOTO): 1. Notify affected shift personnel. 2. Identify all electrical energy sources. 3. De-energize the circuit breaker. 4. Apply approved padlock and danger tag with technician contact info. 5. Use an insulated, calibrated multimeter to test voltage: test known live source, test de-energized circuit (Phase-to-Phase and Phase-to-Ground), and re-test known live source (Three-Point Test). 6. Dissipate stored capacitive energy before touching busbars.'
+    }
+  ];
 
   const interviewQuestions = [
     {
@@ -98,10 +121,20 @@ export const SetupAndInterviewPrep: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Sub Tabs */}
-      <div className="flex border-b border-slate-800 gap-2">
+      <div className="flex border-b border-slate-800 gap-2 overflow-x-auto scrollbar-none">
+        <button
+          onClick={() => setActiveSubTab('oci_dct')}
+          className={`px-4 py-2 text-xs font-semibold border-b-2 whitespace-nowrap transition ${
+            activeSubTab === 'oci_dct'
+              ? 'border-red-500 text-red-400'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          OCI DCT Competencies & Q&A
+        </button>
         <button
           onClick={() => setActiveSubTab('phase1')}
-          className={`px-4 py-2 text-xs font-semibold border-b-2 transition ${
+          className={`px-4 py-2 text-xs font-semibold border-b-2 whitespace-nowrap transition ${
             activeSubTab === 'phase1'
               ? 'border-blue-500 text-blue-400'
               : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -111,14 +144,15 @@ export const SetupAndInterviewPrep: React.FC = () => {
         </button>
         <button
           onClick={() => setActiveSubTab('questions')}
-          className={`px-4 py-2 text-xs font-semibold border-b-2 transition ${
+          className={`px-4 py-2 text-xs font-semibold border-b-2 whitespace-nowrap transition ${
             activeSubTab === 'questions'
               ? 'border-blue-500 text-blue-400'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
-          Google DCT Interview Questions (20 Q&A)
+          Core DCT Technical Q&A (20 Q&A)
         </button>
+
         <button
           onClick={() => setActiveSubTab('architecture')}
           className={`px-4 py-2 text-xs font-semibold border-b-2 transition ${
@@ -141,9 +175,49 @@ export const SetupAndInterviewPrep: React.FC = () => {
         </button>
       </div>
 
+      {/* SUB TAB: OCI DCT Competencies */}
+      {activeSubTab === 'oci_dct' && (
+        <div className="space-y-6">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-red-900/40 text-red-400 border border-red-700/50">
+                Oracle OCI Job Requirements
+              </span>
+              <span className="text-xs text-slate-400">Technical Interview Competencies</span>
+            </div>
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <Wrench className="w-5 h-5 text-red-500" />
+              Oracle Cloud Infrastructure (OCI) Data Center Technician Competencies
+            </h3>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              Mapped directly to target job requirements: server hardware break-fix, Linux command-line diagnostics, Ethernet networking, 42U rack deployments, power/cooling environmental monitoring, ticket prioritization, and 24x7 shift handover.
+            </p>
+          </div>
+
+          {/* OCI Specific Technical Q&A */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+            <h4 className="text-sm font-semibold text-white">Targeted OCI Data Center Technician Technical Interview Q&A</h4>
+            <div className="space-y-3">
+              {ociQuestions.map((item, idx) => (
+                <div key={idx} className="bg-slate-950 border border-slate-800 rounded-lg p-4 space-y-2">
+                  <div className="font-bold text-xs text-red-400 flex items-start gap-2">
+                    <span className="shrink-0">•</span>
+                    <span>{item.q}</span>
+                  </div>
+                  <div className="text-xs text-slate-300 pl-4 border-l-2 border-red-900/50 leading-relaxed font-mono text-[11px]">
+                    {item.a}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* SUB TAB 1: Phase 1 Setup Guide */}
       {activeSubTab === 'phase1' && (
         <div className="space-y-6">
+
           {/* Comparison Matrix */}
           <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">

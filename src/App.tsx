@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
+import { OperationsCenter } from './components/OperationsCenter';
+import { HardwareBreakFixLab } from './components/HardwareBreakFixLab';
+import { LinuxDiagnosticsSuite } from './components/LinuxDiagnosticsSuite';
 import { HealthDashboard } from './components/HealthDashboard';
 import { NetworkDiagnostics } from './components/NetworkDiagnostics';
 import { SimulationLab } from './components/SimulationLab';
@@ -11,7 +14,8 @@ import { SetupAndInterviewPrep } from './components/SetupAndInterviewPrep';
 import { SystemMetrics, SimulationState, IncidentRecord, NetworkDiagResult, RcaAnalysis } from './types';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string>('health');
+  const [activeTab, setActiveTab] = useState<string>('ops-center');
+
   const [metrics, setMetrics] = useState<SystemMetrics | null>(null);
   const [loadingMetrics, setLoadingMetrics] = useState<boolean>(true);
   const [simulationState, setSimulationState] = useState<SimulationState>({
@@ -421,14 +425,14 @@ export default function App() {
   const handleExportMarkdown = (inc: IncidentRecord) => {
     const md = `# DataCenter Copilot — Post-Mortem Incident Report
 
-**Incident ID:** ${inc.id}
-**Title:** ${inc.title}
-**Severity:** ${inc.severity}
-**Category:** ${inc.category}
-**Status:** ${inc.status}
-**Type:** ${inc.isSimulated ? '[SIMULATED LAB ENVIRONMENT]' : '[REAL SYSTEM TELEMETRY]'}
-**Created:** ${inc.createdAt}
-**Resolved:** ${inc.resolvedAt || 'In Progress'}
+**Incident ID:** ${inc.id}  
+**Title:** ${inc.title}  
+**Severity:** ${inc.severity}  
+**Category:** ${inc.category}  
+**Status:** ${inc.status}  
+**Type:** ${inc.isSimulated ? '[SIMULATED LAB ENVIRONMENT]' : '[REAL SYSTEM TELEMETRY]'}  
+**Created:** ${inc.createdAt}  
+**Resolved:** ${inc.resolvedAt || 'In Progress'}  
 
 ---
 
@@ -492,6 +496,22 @@ ${inc.notes.length > 0 ? inc.notes.map(n => `- **[${new Date(n.timestamp).toLoca
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {activeTab === 'ops-center' && (
+          <OperationsCenter
+            incidents={incidents}
+            onNavigateToBreakFix={() => setActiveTab('break-fix')}
+            onNavigateToLinux={() => setActiveTab('linux-suite')}
+          />
+        )}
+
+        {activeTab === 'break-fix' && (
+          <HardwareBreakFixLab />
+        )}
+
+        {activeTab === 'linux-suite' && (
+          <LinuxDiagnosticsSuite />
+        )}
+
         {activeTab === 'health' && (
           <HealthDashboard
             metrics={metrics}
@@ -503,6 +523,7 @@ ${inc.notes.length > 0 ? inc.notes.map(n => `- **[${new Date(n.timestamp).toLoca
         {activeTab === 'network' && (
           <NetworkDiagnostics onRunDiagnosis={handleRunNetworkDiagnosis} />
         )}
+
 
         {activeTab === 'simulations' && (
           <SimulationLab
@@ -542,10 +563,11 @@ ${inc.notes.length > 0 ? inc.notes.map(n => `- **[${new Date(n.timestamp).toLoca
       {/* Footer */}
       <footer className="bg-slate-900 border-t border-slate-800/80 py-4 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>DataCenter Copilot • Portfolio Demonstration Lab for Google Data Center Technician Role</span>
-          <span className="font-mono text-slate-400">Ubuntu Linux • Python 3.10 • Express • Gemini 3.8 Flash • pytest</span>
+          <span>DataCenter Copilot • Portfolio Demonstration Lab for Oracle Cloud Infrastructure (OCI) Data Center Operations Technician</span>
+          <span className="font-mono text-slate-400">Oracle Linux / Ubuntu • Python 3.10 • Express • Gemini 3.8 Flash • pytest</span>
         </div>
       </footer>
     </div>
   );
 }
+

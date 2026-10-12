@@ -332,6 +332,76 @@ export const NetworkDiagnostics: React.FC<NetworkDiagnosticsProps> = ({ onRunDia
         )}
       </div>
 
+      {/* 4. Interactive Guided Network Troubleshooting Workflows */}
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg">
+              <Wifi className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-white">
+                Interactive Guided Network Troubleshooting Workflows (SOP Guided)
+              </h3>
+              <p className="text-xs text-slate-400">
+                Ordered diagnostic sequences for Link Down, Subnet/Routing, and Transport/DNS faults
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+            <div className="flex items-center gap-2 text-blue-400 font-bold text-xs">
+              <span className="w-5 h-5 rounded-full bg-blue-900/60 flex items-center justify-center text-[10px]">1</span>
+              <span>Layer 1 & 2: Link / PHY State</span>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Verify carrier flag, auto-negotiation, RX optical power (-2 to -12 dBm), and CRC error counters.
+            </p>
+            <div className="font-mono text-[11px] bg-slate-900 p-2.5 rounded border border-slate-800 text-slate-300 space-y-1">
+              <div>$ ip link show</div>
+              <div>$ ethtool ens3f0</div>
+              <div>$ ethtool -m ens3f0 (Optics)</div>
+              <div>$ ethtool -S ens3f0 | grep crc</div>
+            </div>
+          </div>
+
+          <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+            <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+              <span className="w-5 h-5 rounded-full bg-emerald-900/60 flex items-center justify-center text-[10px]">2</span>
+              <span>Layer 3: IP, Subnet & Gateway</span>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Verify IP assignment, routing table default route, ARP gateway resolution, and ICMP ping latency.
+            </p>
+            <div className="font-mono text-[11px] bg-slate-900 p-2.5 rounded border border-slate-800 text-slate-300 space-y-1">
+              <div>$ ip addr show dev ens3f0</div>
+              <div>$ ip route show default</div>
+              <div>$ ping -c 3 -W 1 10.240.0.1</div>
+              <div>$ ip neigh show (ARP cache)</div>
+            </div>
+          </div>
+
+          <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+            <div className="flex items-center gap-2 text-amber-400 font-bold text-xs">
+              <span className="w-5 h-5 rounded-full bg-amber-900/60 flex items-center justify-center text-[10px]">3</span>
+              <span>Layer 4 & 7: Transport & DNS</span>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Verify resolv.conf upstream nameservers, FQDN lookup, listening TCP/UDP sockets, and SYN port probe.
+            </p>
+            <div className="font-mono text-[11px] bg-slate-900 p-2.5 rounded border border-slate-800 text-slate-300 space-y-1">
+              <div>$ cat /etc/resolv.conf</div>
+              <div>$ getent hosts &lt;target&gt;</div>
+              <div>$ ss -tuln (Port Listeners)</div>
+              <div>$ nc -zv -w 2 &lt;ip&gt; &lt;port&gt;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       {/* Interview Pedagogical Guide: The 4-Layer Network Mental Model */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
         <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">

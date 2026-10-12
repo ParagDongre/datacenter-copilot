@@ -1,6 +1,7 @@
 import React from 'react';
-import { Server, Activity, ShieldCheck, RefreshCw, Cpu, HardDrive } from 'lucide-react';
+import { Server, Activity, ShieldCheck, RefreshCw, Cpu, HardDrive, Building2, Wrench, Terminal } from 'lucide-react';
 import { SystemMetrics } from '../types';
+
 
 interface HeaderProps {
   metrics: SystemMetrics | null;
@@ -20,14 +21,17 @@ export const Header: React.FC<HeaderProps> = ({
   openIncidentsCount
 }) => {
   const tabs = [
-    { id: 'health', label: 'Linux Health', icon: Activity },
-    { id: 'network', label: 'Network Diag', icon: Server },
+    { id: 'ops-center', label: 'OCI Operations Center', icon: Building2, highlight: true },
+    { id: 'break-fix', label: 'Hardware Break-Fix Lab', icon: Wrench, badge: '11 Faults' },
+    { id: 'linux-suite', label: 'Linux Diagnostic Suite', icon: Terminal },
+    { id: 'health', label: 'Host Linux Health', icon: Activity },
+    { id: 'network', label: 'Network Troubleshooting', icon: Server },
     { id: 'simulations', label: 'Failure Lab', icon: HardDrive, badge: '4 Scenarios' },
     { id: 'incidents', label: 'Incidents & Reports', icon: ShieldCheck, badgeCount: openIncidentsCount },
-    { id: 'ai-rca', label: 'AI Copilot (Gemini)', icon: Cpu, highlight: true },
+    { id: 'ai-rca', label: 'AI Copilot (Gemini)', icon: Cpu },
     { id: 'tests', label: 'Automated Tests', icon: RefreshCw },
     { id: 'python-code', label: 'Python Lab Code', icon: Server },
-    { id: 'interview-prep', label: 'Phase 1 & Interview Prep', icon: ShieldCheck, accent: true },
+    { id: 'interview-prep', label: 'OCI DCT & Interview Prep', icon: ShieldCheck, accent: true },
   ];
 
   return (
@@ -35,24 +39,25 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Top Banner */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-600/20 border border-blue-500/40 rounded-lg text-blue-400">
+          <div className="p-2 bg-red-600/20 border border-red-500/40 rounded-lg text-red-400">
             <Server className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg font-bold text-white tracking-tight">DataCenter Copilot</h1>
-              <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                v1.0 Operational Lab
+              <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-red-500/20 text-red-400 border border-red-500/30 font-mono">
+                OCI DCT Edition
               </span>
-              <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                Google DCT Candidate Standard
+              <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                Live Operations Lab
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              AI-Assisted Linux & Network Diagnostics • Safe Incident Simulation • Root Cause Analysis
+              Oracle Cloud Infrastructure (OCI) Data Center Technician Operational Lab • Hardware Break-Fix • Linux Diagnostics
             </p>
           </div>
         </div>
+
 
         {/* System Node Telemetry Snippet */}
         <div className="flex items-center gap-4 text-xs font-mono">

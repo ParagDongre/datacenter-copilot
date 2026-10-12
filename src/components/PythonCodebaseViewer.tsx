@@ -124,6 +124,23 @@ class TestDataCenterCopilot(unittest.TestCase):
     # Runs in 1.02s with 100% pass rate: python3 -m unittest tests/test_copilot.py`
     },
     {
+      filename: 'linux_ops.py',
+      path: 'datacenter_copilot/linux_ops.py',
+      description: 'Safe read-only Linux diagnostic engine with strict allowlists and timeouts.',
+      language: 'python',
+      code: `import subprocess
+from datacenter_copilot.linux_ops import run_safe_linux_command, run_all_safe_linux_commands
+# Safe argument-list execution for: uname, df, free, uptime, ip link, ip route, ss, etc.`
+    },
+    {
+      filename: 'oci_operations.py',
+      path: 'datacenter_copilot/oci_operations.py',
+      description: 'OCI Data Center Operations topology, 11 break-fix scenarios, 42U elevation, and SLAs.',
+      language: 'python',
+      code: `from datacenter_copilot.oci_operations import OCI_FACILITY_DATA, HARDWARE_SCENARIOS, RACK_ELEVATION_DATA
+# Models real-world OCI facility telemetry, 2N power feeds, CRAC units, and 11 hardware break-fix SOPs.`
+    },
+    {
       filename: 'requirements.txt',
       path: 'requirements.txt',
       description: 'Standard Python dependencies list.',
@@ -131,6 +148,7 @@ class TestDataCenterCopilot(unittest.TestCase):
       code: `psutil>=5.9.0\nstreamlit>=1.30.0\npytest>=7.4.0\ngoogle-genai>=0.1.1\nrequests>=2.31.0`
     }
   ];
+
 
   const currentFile = files.find(f => f.filename === selectedFile) || files[0];
 

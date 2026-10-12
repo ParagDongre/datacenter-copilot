@@ -255,6 +255,54 @@ class TestDataCenterCopilot(unittest.TestCase):
         self.assertIsNotNone(reloaded["ai_analysis"])
         self.assertEqual(reloaded["ai_analysis"]["incidentSummary"], "AI RCA Test")
 
+    def test_16_safe_linux_ops_allowlist_and_execution(self):
+        """Verify safe Linux diagnostics engine adheres to allowlist and safely executes read-only checks."""
+        from datacenter_copilot.linux_ops import run_safe_linux_command, SAFE_COMMAND_ALLOWLIST
+        # Verify allowlist contains core checks
+        self.assertIn("uname", SAFE_COMMAND_ALLOWLIST)
+        self.assertIn("df", SAFE_COMMAND_ALLOWLIST)
+        self.assertIn("free", SAFE_COMMAND_ALLOWLIST)
+        self.assertIn("uptime", SAFE_COMMAND_ALLOWLIST)
+        self.assertIn("ip_link", SAFE_COMMAND_ALLOWLIST)
+        self.assertIn("ss_sockets", SAFE_COMMAND_ALLOWLIST)
+
+        # Execute safe uname check
+        res = run_safe_linux_command("uname")
+        self.assertTrue(res["success"])
+        self.assertEqual(res["exitCode"], 0)
+        self.assertIn("Linux", res["output"])
+
+        # Execute arbitrary prohibited command key
+        bad_res = run_safe_linux_command("rm_rf_slash")
+        self.assertFalse(bad_res["success"])
+        self.assertEqual(bad_res["status"], "PROHIBITED")
+
+    def test_17_oci_operations_and_break_fix_scenarios(self):
+        """Verify OCI operational data, 11 break-fix scenarios, rack elevations, and SLA targets."""
+        from datacenter_copilot.oci_operations import (
+            OCI_FACILITY_DATA, HARDWARE_SCENARIOS, RACK_ELEVATION_DATA
+        )
+        # Check facility metrics
+        self.assertEqual(OCI_FACILITY_DATA["site"]["region"], "us-ashburn-1")
+        self.assertEqual(OCI_FACILITY_DATA["site"]["status"], "OPERATIONAL")
+        self.assertGreaterEqual(len(OCI_FACILITY_DATA["slas"]), 4)
+
+        # Check 11 hardware break-fix scenarios
+        self.assertEqual(len(HARDWARE_SCENARIOS), 11)
+        for s in HARDWARE_SCENARIOS:
+            self.assertIn("id", s)
+            self.assertIn("title", s)
+            self.assertIn("diagnostic_steps", s)
+            self.assertIn("safe_sop_remediation", s)
+            self.assertIn("post_verification", s)
+            self.assertIn("ticket_resolution_note", s)
+            self.assertGreaterEqual(len(s["diagnostic_steps"]), 2)
+
+        # Check 42U rack elevation
+        self.assertEqual(RACK_ELEVATION_DATA["total_u"], 42)
+        self.assertGreaterEqual(len(RACK_ELEVATION_DATA["units"]), 10)
+
 
 if __name__ == "__main__":
     unittest.main()
+

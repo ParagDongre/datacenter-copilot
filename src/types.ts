@@ -132,3 +132,112 @@ export interface IncidentRecord {
   remediationApplied?: string | null;
   verifiedOutcome?: string | null;
 }
+
+export interface LinuxCommandResult {
+  key: string;
+  purpose: string;
+  category: string;
+  description: string;
+  args: string[];
+  commandStr: string;
+  success: boolean;
+  status: 'SUCCESS' | 'COMMAND_FAILED' | 'UNAVAILABLE' | 'TIMEOUT' | 'PERMISSION_DENIED' | 'ERROR';
+  exitCode: number;
+  output: string;
+  error?: string | null;
+}
+
+export interface OciFacilityData {
+  site: {
+    region: string;
+    ad: string;
+    facility_code: string;
+    building: string;
+    hall: string;
+    status: string;
+    total_racks: number;
+    active_servers: number;
+    degraded_servers: number;
+    offline_servers: number;
+    network_switches: number;
+    switches_alarm: number;
+  };
+  environmental: {
+    supply_air_temp_c: number;
+    supply_air_status: string;
+    return_air_temp_c: number;
+    cold_aisle_humidity_rh: number;
+    crac_units_online: number;
+    crac_units_total: number;
+    crac_redundancy: string;
+    hot_spots_detected: number;
+    hot_spot_location: string;
+    pue_current: number;
+    target_pue: number;
+  };
+  power: {
+    utility_feed_a_kw: number;
+    utility_feed_b_kw: number;
+    ups_load_percent_a: number;
+    ups_load_percent_b: number;
+    generator_status: string;
+    total_active_load_mw: number;
+    total_facility_capacity_mw: number;
+    redundancy_level: string;
+    alerts: string[];
+  };
+  slas: Array<{
+    tier: string;
+    sla_minutes: number;
+    target: string;
+    active_count: number;
+    breach_risk: 'HIGH' | 'MEDIUM' | 'LOW' | 'NONE';
+  }>;
+  shift_handover: {
+    current_shift: string;
+    outgoing_lead: string;
+    incoming_lead: string;
+    handover_timestamp: string;
+    pending_critical_tasks: string[];
+    safety_reminders: string[];
+  };
+}
+
+export interface HardwareScenario {
+  id: string;
+  title: string;
+  category: string;
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  asset_tag: string;
+  rack_location: string;
+  chassis_model: string;
+  initial_symptoms: string;
+  observable_evidence: string[];
+  diagnostic_steps: Array<{ step: number; action: string; finding: string }>;
+  confirmed_findings: string;
+  hypotheses: Array<{ title: string; verdict: 'CONFIRMED' | 'RULED_OUT'; reason: string }>;
+  safe_sop_remediation: string[];
+  post_verification: string[];
+  escalation_conditions: string;
+  ticket_resolution_note: string;
+}
+
+export interface NetworkWorkflow {
+  id: string;
+  title: string;
+  description: string;
+  steps: Array<{ step: number; command: string; expected: string; if_failed: string }>;
+}
+
+export interface RackElevationData {
+  rack_id: string;
+  total_u: number;
+  pdu_a_circuit: string;
+  pdu_b_circuit: string;
+  current_load_kw: number;
+  max_rated_kw: number;
+  inlet_temp_c: number;
+  exhaust_temp_c: number;
+  units: Array<{ u: number; asset: string; type: string; status: 'OK' | 'DEGRADED' | 'WARNING' | 'FAULT' }>;
+}
+

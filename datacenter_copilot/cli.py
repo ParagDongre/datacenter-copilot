@@ -18,6 +18,42 @@ from datacenter_copilot.network_diag import check_dns_resolution, check_tcp_port
 from datacenter_copilot.simulations import SimulationController
 from datacenter_copilot.incident_store import IncidentStore
 from datacenter_copilot.gemini_assistant import get_offline_rca_analysis
+from datacenter_copilot.linux_ops import run_safe_linux_command, run_all_safe_linux_commands, SAFE_COMMAND_ALLOWLIST
+from datacenter_copilot.oci_operations import (
+    OCI_FACILITY_DATA, HARDWARE_SCENARIOS, NETWORK_TROUBLESHOOTING_WORKFLOWS,
+    RACK_ELEVATION_DATA, OCI_INTERVIEW_PREP_DATA
+)
+
+
+def handle_linux_ops(args):
+    action = args.action
+    if action == "list_commands":
+        items = [{"key": k, "purpose": v["purpose"], "category": v["category"], "description": v["description"], "args": v["args"]} for k, v in SAFE_COMMAND_ALLOWLIST.items()]
+        print(json.dumps(items))
+    elif action == "run":
+        cmd_key = args.cmd_key
+        print(json.dumps(run_safe_linux_command(cmd_key)))
+    elif action == "run_all":
+        print(json.dumps(run_all_safe_linux_commands()))
+    else:
+        print(json.dumps({"error": f"Unknown linux_ops action: {action}"}))
+
+
+def handle_oci_ops(args):
+    action = args.action
+    if action == "facility":
+        print(json.dumps(OCI_FACILITY_DATA))
+    elif action == "scenarios":
+        print(json.dumps(HARDWARE_SCENARIOS))
+    elif action == "workflows":
+        print(json.dumps(NETWORK_TROUBLESHOOTING_WORKFLOWS))
+    elif action == "rack":
+        print(json.dumps(RACK_ELEVATION_DATA))
+    elif action == "interview_prep":
+        print(json.dumps(OCI_INTERVIEW_PREP_DATA))
+    else:
+        print(json.dumps({"error": f"Unknown oci_ops action: {action}"}))
+
 
 
 def handle_metrics(args):
@@ -308,6 +344,15 @@ def main():
     # tests
     subparsers.add_parser("run_tests")
 
+    # linux_ops
+    linux_p = subparsers.add_parser("linux_ops")
+    linux_p.add_argument("--action", required=True)
+    linux_p.add_argument("--cmd-key", default="uname")
+
+    # oci_ops
+    oci_p = subparsers.add_parser("oci_ops")
+    oci_p.add_argument("--action", required=True)
+
     args = parser.parse_args()
 
     if args.command == "metrics":
@@ -320,9 +365,14 @@ def main():
         handle_incident(args)
     elif args.command == "run_tests":
         handle_run_tests(args)
+    elif args.command == "linux_ops":
+        handle_linux_ops(args)
+    elif args.command == "oci_ops":
+        handle_oci_ops(args)
     else:
         parser.print_help()
 
 
 if __name__ == "__main__":
     main()
+

@@ -260,8 +260,84 @@ app.post('/api/incidents/analysis', async (req, res) => {
   }
 });
 
+// 4b. Linux Safe Read-Only Diagnostics
+app.get('/api/linux/commands', async (req, res) => {
+  try {
+    const list = await runPythonCli(['linux_ops', '--action', 'list_commands']);
+    res.json(list);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/linux/run', async (req, res) => {
+  const { commandKey } = req.body;
+  try {
+    const result = await runPythonCli(['linux_ops', '--action', 'run', '--cmd-key', String(commandKey || 'uname')]);
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/linux/run-all', async (req, res) => {
+  try {
+    const results = await runPythonCli(['linux_ops', '--action', 'run_all']);
+    res.json(results);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 4c. OCI Operations & Break-Fix Endpoints
+app.get('/api/oci/facility', async (req, res) => {
+  try {
+    const data = await runPythonCli(['oci_ops', '--action', 'facility']);
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/oci/scenarios', async (req, res) => {
+  try {
+    const data = await runPythonCli(['oci_ops', '--action', 'scenarios']);
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/oci/workflows', async (req, res) => {
+  try {
+    const data = await runPythonCli(['oci_ops', '--action', 'workflows']);
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/oci/rack', async (req, res) => {
+  try {
+    const data = await runPythonCli(['oci_ops', '--action', 'rack']);
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/oci/interview-prep', async (req, res) => {
+  try {
+    const data = await runPythonCli(['oci_ops', '--action', 'interview_prep']);
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 5. Live Test Runner (Executes real unittest on host machine)
 app.post('/api/tests/run', async (req, res) => {
+
   try {
     const testResults = await runPythonCli(['run_tests']);
     res.json(testResults);
